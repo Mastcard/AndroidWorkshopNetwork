@@ -1,6 +1,5 @@
 package com.androidworkshopnetwork;
 
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -18,29 +17,25 @@ public class SensorManagerTest {
     /** The sensor manager instance. */
     private static SensorManager sensorManager = SensorManager.getInstance();
 
-    /** The sensors. */
-    private static Sensor camera1;
-    private static Sensor photo1;
-    private static Sensor button1;
-
     /**
      * Set up.
      */
     @BeforeClass
     public static void setUp() {
-        camera1 = new Sensor();
+        /* The sensors. */
+        Sensor camera1 = new Sensor();
         camera1.setName("Camera1");
         camera1.setIp("1.1.1.1");
         camera1.setSensorType(SensorTypeEnum.Camera);
         camera1.setState(StateEnum.OK);
 
-        photo1 = new Sensor();
+        Sensor photo1 = new Sensor();
         photo1.setName("Photo1");
         photo1.setIp("1.1.1.2");
         photo1.setSensorType(SensorTypeEnum.Photoresistance);
         photo1.setState(StateEnum.OK);
 
-        button1 = new Sensor();
+        Sensor button1 = new Sensor();
         button1.setName("Button1");
         button1.setIp("1.1.1.3");
         button1.setSensorType(SensorTypeEnum.Pushbutton);

@@ -5,10 +5,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -17,11 +18,8 @@ public class HomeActivity extends Activity {
     private final String TAG = this.getClass().getSimpleName();
     private Context context = this;
 
-    private RelativeLayout.LayoutParams layoutParams =
-            new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-
-
-
+    //private LinearLayout linearLayout;
+    private LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,11 +75,39 @@ public class HomeActivity extends Activity {
                 Log.i(TAG, "You clicked on the button");
                 Toast.makeText(context, R.string.stop_sended, Toast.LENGTH_LONG).show();
                 ((SensorButton) v).updateSensorState(StateEnum.OK);
-
             }
         });
 
-        this.addContentView(button, layoutParams);
+        LinearLayout layout = new LinearLayout(context);
+        layout.setOrientation(LinearLayout.VERTICAL);
+
+        for (int i = 0; i < 3; i++) {
+            LinearLayout row = new LinearLayout(this);
+            row.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+
+            for (int j = 0; j < 4; j++) {
+                SensorButton btnTag = new SensorButton(context, camera);
+                btnTag.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+                btnTag.setText("Button " + (j + 1 + (i * 4)));
+                btnTag.setId(j + 1 + (i * 4));
+                btnTag.setOnClickListener(new View.OnClickListener() {
+
+                                              @Override
+                                              public void onClick(View v) {
+                                                  Log.i(TAG, "You clicked on the button");
+                                                  Toast.makeText(context, R.string.stop_sended, Toast.LENGTH_LONG).show();
+                                                  ((SensorButton) v).updateSensorState(StateEnum.OK);
+                                              }
+                                          }
+                );
+
+                row.addView(btnTag);
+            }
+
+            layout.addView(row);
+        }
+
+        this.addContentView(layout, layoutParams);
     }
 
 }
