@@ -3,7 +3,10 @@
     <string name="action_settings">Settings</string>
     <string name="admin_button">Admin</string>
     <string name="main_text_home">Welcome on your Alarm application !</string>
+    <string name="stop_sended">STOP alarm sended...</string>
 
     <integer name="buffer_size">256</integer>
+
+
 
 </resources>

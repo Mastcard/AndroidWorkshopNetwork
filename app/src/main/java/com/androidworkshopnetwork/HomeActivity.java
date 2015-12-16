@@ -10,11 +10,18 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 public class HomeActivity extends Activity {
 
     private final String TAG = this.getClass().getSimpleName();
     private Context context = this;
+
+    private RelativeLayout.LayoutParams layoutParams =
+            new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,24 +62,26 @@ public class HomeActivity extends Activity {
 
     @SuppressLint("SetTextI18n")
     private void init() {
-        Log.d(TAG, "init BEGIN");
-        Button button = new Button(context);
+        Sensor camera = new Sensor();
+        camera.setName("Camera1");
+        camera.setIp("1.1.1.1");
+        camera.setSensorType(SensorTypeEnum.Camera);
+        camera.setState(StateEnum.Alarm);
 
-        Log.d(TAG, "init SETTING BUTTON PROPERTIES");
-        button.setText("Test");
-        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        SensorButton button = new SensorButton(context, camera);
+        button.setText(button.getSensorName());
 
-        //button.setLayoutParams(layoutParams);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.i(TAG, "You clicked on the button");
+                Toast.makeText(context, R.string.stop_sended, Toast.LENGTH_LONG).show();
+                ((SensorButton) v).updateSensorState(StateEnum.OK);
+
             }
         });
-        Log.d(TAG, "init BUTTON PROPERTIES SET");
 
         this.addContentView(button, layoutParams);
-        Log.d(TAG, "init END");
     }
 
 }
