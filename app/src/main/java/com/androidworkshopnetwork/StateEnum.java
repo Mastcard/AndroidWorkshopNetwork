@@ -8,6 +8,7 @@ public enum StateEnum {
     OK ("OK"),
     Alarm ("Alarm"),
     Disconnected ("Disconnected"),
+    SerialError ("Serial error"),
     Unknown ("?");
 
     /** The state. */

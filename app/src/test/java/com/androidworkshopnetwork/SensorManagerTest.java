@@ -98,6 +98,9 @@ public class SensorManagerTest {
 
         button.setState(StateEnum.Unknown);
         assertEquals(StateEnum.Unknown, sameButton.getState());
+
+        sameButton.setState(StateEnum.SerialError);
+        assertEquals(StateEnum.SerialError, button.getState());
     }
 
     @Test
