@@ -73,7 +73,6 @@ public class HomeActivity extends Activity {
 
         this.addContentView(button, layoutParams);
         Log.d(TAG, "init END");
-
     }
 
 }
