@@ -1,9 +1,11 @@
 package com.androidworkshopnetwork;
 
+import java.io.Serializable;
+
 /**
  * Created by Adrien on 16/12/15.
  */
-public class Sensor {
+public class Sensor implements Serializable {
 
     /** The name. */
     private String name;

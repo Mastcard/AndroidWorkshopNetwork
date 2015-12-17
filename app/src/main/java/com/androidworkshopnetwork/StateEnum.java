@@ -1,14 +1,16 @@
 package com.androidworkshopnetwork;
 
+import java.io.Serializable;
+
 /**
  * Created by Adrien on 16/12/15.
  */
-public enum StateEnum {
+public enum StateEnum implements Serializable {
 
     OK ("OK"),
     Alarm ("Alarm"),
     Disconnected ("Disconnected"),
-    SerialError ("Serial error"),
+    SerialError ("SerialError"),
     Unknown ("?");
 
     /** The state. */

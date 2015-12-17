@@ -21,11 +21,11 @@ public class UDPClient implements Runnable {
     /** The Constant BUFFER_SIZE. */
     private static final int BUFFER_SIZE = 32;
 
-    /** The Constant TIME_OUT. */
-    private static final int TIME_OUT = 5000;
-
     /** The buffer. */
     private byte buffer[] = new byte[BUFFER_SIZE];
+
+    /** The Constant TIME_OUT. */
+    private static final int TIME_OUT = 15000;
 
     /** The ip. */
     private InetAddress ip;
@@ -90,7 +90,8 @@ public class UDPClient implements Runnable {
 
             try {
                 socket.receive(dataToReceive);
-                response = new String(dataToReceive.getData());
+                response = new String(dataToReceive.getData()).substring(0, dataToReceive.getLength());
+                NetworkCommunicator.executeReceveivedProtocolAction(response);
             } catch(SocketException e) {
                 e.printStackTrace();
                 response = "";
@@ -121,8 +122,8 @@ public class UDPClient implements Runnable {
      *
      * @param ip
      */
-    public void setIp(InetAddress ip) {
-        this.ip = ip;
+    public void setIp(String ip) throws UnknownHostException {
+        this.ip = InetAddress.getByName(ip);
     }
 
     /**

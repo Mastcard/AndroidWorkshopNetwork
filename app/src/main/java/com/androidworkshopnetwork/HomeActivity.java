@@ -4,19 +4,23 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
+
+import java.io.File;
+import java.util.HashMap;
+import java.util.Iterator;
 
 public class HomeActivity extends Activity {
 
     private final String TAG = this.getClass().getSimpleName();
     private Context context = this;
+
+    private SensorManager sensorManager = SensorManager.getInstance();
+    private SensorButtonManager sensorButtonManager = SensorButtonManager.getInstance();
 
     //private LinearLayout linearLayout;
     private LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT);
@@ -25,6 +29,7 @@ public class HomeActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_activity);
+
     }
 
     @Override
@@ -38,9 +43,31 @@ public class HomeActivity extends Activity {
     protected void onStart() {
         super.onStart();
 
-        Log.d(TAG, "before init");
+        NetworkCommunicator.startServer(context);
+        NetworkCommunicator.setContext(context);
+
+        File serializable_file = new File(Constants.SERIALIZE_FILE);
+        if (serializable_file.exists()) {
+            IOManager.loadSensorList();
+        }
+
+        if (sensorManager.getSensorCount() == 0) {
+            // Fichier vid
+            Sensor camera = new Sensor();
+            camera.setName("Camera1");
+            camera.setIp("1.1.1.1");
+            camera.setSensorType(SensorTypeEnum.Camera);
+            camera.setState(StateEnum.Alarm);
+            sensorManager.addSensor(camera);
+        }
+
         this.init();
-        Log.d(TAG, "after init");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
     }
 
     @Override
@@ -60,54 +87,24 @@ public class HomeActivity extends Activity {
 
     @SuppressLint("SetTextI18n")
     private void init() {
-        Sensor camera = new Sensor();
-        camera.setName("Camera1");
-        camera.setIp("1.1.1.1");
-        camera.setSensorType(SensorTypeEnum.Camera);
-        camera.setState(StateEnum.Alarm);
-
-        SensorButton button = new SensorButton(context, camera);
-        button.setText(button.getSensorName());
-
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.i(TAG, "You clicked on the button");
-                Toast.makeText(context, R.string.stop_sended, Toast.LENGTH_LONG).show();
-                ((SensorButton) v).updateSensorState(StateEnum.OK);
-            }
-        });
+        sensorButtonManager.updateSensorButtonMap(context);
+        HashMap<String, SensorButton> sensorButtonMap = sensorButtonManager.getSensorButtonMap();
 
         LinearLayout layout = new LinearLayout(context);
         layout.setOrientation(LinearLayout.VERTICAL);
+        layout.setGravity(Gravity.CENTER);
 
-        for (int i = 0; i < 3; i++) {
+        for (Iterator<SensorButton> it = sensorButtonMap.values().iterator(); it.hasNext(); ) {
             LinearLayout row = new LinearLayout(this);
             row.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-
-            for (int j = 0; j < 4; j++) {
-                SensorButton btnTag = new SensorButton(context, camera);
-                btnTag.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-                btnTag.setText("Button " + (j + 1 + (i * 4)));
-                btnTag.setId(j + 1 + (i * 4));
-                btnTag.setOnClickListener(new View.OnClickListener() {
-
-                                              @Override
-                                              public void onClick(View v) {
-                                                  Log.i(TAG, "You clicked on the button");
-                                                  Toast.makeText(context, R.string.stop_sended, Toast.LENGTH_LONG).show();
-                                                  ((SensorButton) v).updateSensorState(StateEnum.OK);
-                                              }
-                                          }
-                );
-
-                row.addView(btnTag);
-            }
+            row.setGravity(Gravity.CENTER_HORIZONTAL);
+            SensorButton sensorButton = (SensorButton) it.next();
+            row.addView(sensorButton);
 
             layout.addView(row);
         }
-
         this.addContentView(layout, layoutParams);
+
     }
 
 }

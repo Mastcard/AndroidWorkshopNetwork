@@ -47,7 +47,7 @@ public class SensorManagerTest {
     }
 
     @Test
-    public void testSensorManagerMapSize() throws Exception {
+    public void testSensorManagerMapSize() {
         assertEquals(3, sensorManager.getSensorCount());
     }
 

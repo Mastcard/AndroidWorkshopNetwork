@@ -1,9 +1,11 @@
 package com.androidworkshopnetwork;
 
+import java.io.Serializable;
+
 /**
  * Created by Adrien on 16/12/15.
  */
-public enum SensorTypeEnum {
+public enum SensorTypeEnum implements Serializable {
 
     Photoresistance ("PhotoResistance"),
     Pushbutton ("PushButton"),

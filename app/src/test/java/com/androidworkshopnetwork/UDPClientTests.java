@@ -35,7 +35,7 @@ public class UDPClientTests {
 
         String clientIp = "127.0.0.1";
         int clientPort = 8532;
-        client.setIp(InetAddress.getByName(clientIp));
+        client.setIp(clientIp);
         client.setPort(clientPort);
         client.setMessageToSend("ST 10.40.57.212");
         Thread clientThread = new Thread(client);

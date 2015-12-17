@@ -6,7 +6,7 @@
     <string name="stop_sended">STOP alarm sended...</string>
 
     <integer name="buffer_size">256</integer>
-
+    <string name="title_activity_camera">CameraActivity</string>
 
 
 </resources>
