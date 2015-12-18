@@ -7,6 +7,8 @@
 
     <integer name="buffer_size">256</integer>
     <string name="title_activity_camera">CameraActivity</string>
+    <string name="reset_button">RESET</string>
+    <string name="reset_message">This will delete the serialize file of the application. Then, you will lose all information about your sensors.</string>
 
 
 </resources>

@@ -1,6 +1,7 @@
 package com.androidworkshopnetwork;
 
 import android.os.Environment;
+import android.util.Log;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -86,6 +87,15 @@ public class IOManager {
         }
 
         return sensorManager.getSensorMap();
+    }
+
+    /**
+     * Remove serialized file.
+     */
+    public static void removeSerializedFile() {
+        File file = new File(DIR, "sensors.ser");
+        boolean deleteWorked = file.delete();
+        Log.i(TAG, "Delete serialized file : " + deleteWorked);
     }
 
 }

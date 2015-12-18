@@ -36,8 +36,9 @@ public class SensorButton extends Button {
             @Override
             public void onClick(View v) {
                 try {
+                    v.setEnabled(false);
                     //new Handler(Looper.getMainLooper()).postAtFrontOfQueue(new AutoReloadButton((SensorButton)v));
-                    Toast.makeText(context, "STOP Alarm signal sending...", Toast.LENGTH_SHORT);
+                    Toast.makeText(context, "STOP Alarm signal sending...", Toast.LENGTH_SHORT).show();
                     NetworkCommunicator.stopAlarm(sensor.getIp());
                 } catch (UnknownHostException e) {
                     e.printStackTrace();
@@ -116,6 +117,7 @@ public class SensorButton extends Button {
                 this.setBackgroundColor(Color.GRAY);
                 this.setTextColor(Color.BLACK);
                 this.setEnabled(true);
+                break;
 
             case Unknown:
                 this.setBackgroundColor(Color.WHITE);

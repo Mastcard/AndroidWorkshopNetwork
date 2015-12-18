@@ -29,6 +29,9 @@ public class NetworkCommunicator {
     /** The context. */
     private static Context context = null;
 
+    /** The ip address validator. */
+    private static IpAddressValidator ipValidator = new IpAddressValidator();
+
     /**
      * Build response for message.
      *
@@ -81,24 +84,31 @@ public class NetworkCommunicator {
 
                 case "AD":
                     if (splittedMessage.length > 2) {
-                        Sensor sensor = new Sensor();
-                        sensor.setIp(splittedMessage[1]);
+                        sensorIp = splittedMessage[1];
+                        if (ipValidator.validate(sensorIp)) {
+                            Sensor sensor = new Sensor();
+                            sensor.setIp(splittedMessage[1]);
 
-                        switch (splittedMessage[2]) {
-                            case "-2":
-                                sensor.setSensorType(SensorTypeEnum.Photoresistance);
-                                break;
-                            case "-4":
-                                sensor.setSensorType(SensorTypeEnum.Pushbutton);
-                                break;
-                            default:
-                                Log.i(TAG, "Unknown sensor type \"" + splittedMessage[2] + "\" !");
+                            switch (splittedMessage[2]) {
+                                case "-2":
+                                    sensor.setSensorType(SensorTypeEnum.Photoresistance);
+                                    break;
+                                case "-4":
+                                    sensor.setSensorType(SensorTypeEnum.Pushbutton);
+                                    break;
+                                default:
+                                    Log.i(TAG, "Unknown sensor type \"" + splittedMessage[2] + "\" !");
+                                    return;
+                            }
+
+                            sensor.setName(sensor.getSensorType().toString() + sensorManager.getSensorCount());
+                            sensor.setState(StateEnum.OK);
+                            sensorManager.addSensor(sensor);
+                            sensorButtonManager.updateSensorButtonMap(context);
+                            context.startActivity(new Intent(context, HomeActivity.class));
+                        } else {
+                            Log.i(TAG, "IP address \"" + sensorIp + "\" is not valid.");
                         }
-
-                        sensor.setName(sensor.getSensorType().toString() + sensorManager.getSensorCount());
-                        sensor.setState(StateEnum.OK);
-                        sensorManager.addSensor(sensor);
-                        sensorButtonManager.updateSensorButtonMap(context);
                     } else {
                         Log.i(TAG, "AD protocol not in correct format \"AL\" \"IP\" \"TYPE\"");
                     }
@@ -159,6 +169,9 @@ public class NetworkCommunicator {
 
                             case "CA":
                                 Log.i(TAG, "CAMERA request accepted :)");
+                                Intent cameraIntent = new Intent(context, CameraActivity.class);
+                                cameraIntent.putExtra("SENSOR_IP", sensorIp);
+                                context.startActivity(cameraIntent);
                                 break;
 
                             case "FA":
@@ -171,6 +184,8 @@ public class NetworkCommunicator {
                             case "LF":
                                 Log.i(TAG, splittedMessage[1] + " signal successfully send :)");
                                 break;
+                            default:
+                                Log.i(TAG, "Unknown message \"" + receivedMessage + "\"");
                         }
                     } else {
                         Log.i(TAG, "The OK message \"" + receivedMessage + "\" is too short !");
