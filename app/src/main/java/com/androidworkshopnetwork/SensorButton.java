@@ -1,6 +1,9 @@
 package com.androidworkshopnetwork;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Handler;
 import android.os.Looper;
@@ -35,16 +38,52 @@ public class SensorButton extends Button {
         this.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                try {
-                    v.setEnabled(false);
-                    //new Handler(Looper.getMainLooper()).postAtFrontOfQueue(new AutoReloadButton((SensorButton)v));
-                    Toast.makeText(context, "STOP Alarm signal sending...", Toast.LENGTH_SHORT).show();
-                    NetworkCommunicator.stopAlarm(sensor.getIp());
-                } catch (UnknownHostException e) {
-                    e.printStackTrace();
+                if (!sensor.getState().equals(StateEnum.OK)) {
+                    try {
+                        v.setEnabled(false);
+                        //new Handler(Looper.getMainLooper()).postAtFrontOfQueue(new AutoReloadButton((SensorButton)v));
+                        Toast.makeText(context, "STOP Alarm signal sending...", Toast.LENGTH_SHORT).show();
+                        NetworkCommunicator.stopAlarm(sensor.getIp());
+                    } catch (UnknownHostException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });
+
+        if (sensor.getSensorType().equals(SensorTypeEnum.Camera)) {
+            this.setOnLongClickListener(new OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context);
+                    dialogBuilder.setTitle("Drive the camera...");
+                    dialogBuilder.setMessage("Do you want to drive the camera ?");
+                    dialogBuilder.setCancelable(false);
+                    dialogBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            try {
+                                NetworkCommunicator.startCameraDirection(sensor.getIp());
+                            } catch (UnknownHostException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+
+                    dialogBuilder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
+
+                    AlertDialog dialog = dialogBuilder.create();
+                    dialog.show();
+
+                    return true;
+                }
+            });
+        }
 
         this.update();
     }
@@ -98,7 +137,7 @@ public class SensorButton extends Button {
             case OK:
                 this.setBackgroundColor(Color.GREEN);
                 this.setTextColor(Color.WHITE);
-                this.setEnabled(false);
+                this.setEnabled(true);
                 break;
 
             case Alarm:

@@ -25,7 +25,7 @@ public class UDPClient implements Runnable {
     private byte buffer[] = new byte[BUFFER_SIZE];
 
     /** The Constant TIME_OUT. */
-    private static final int TIME_OUT = 15000;
+    private int timeout = 15000;
 
     /** The ip. */
     private InetAddress ip;
@@ -84,7 +84,7 @@ public class UDPClient implements Runnable {
             Log.d(TAG, "Done.");
 
             // Read response
-            socket.setSoTimeout(TIME_OUT);
+            socket.setSoTimeout(timeout);
             DatagramPacket dataToReceive = new DatagramPacket(new byte[BUFFER_SIZE], BUFFER_SIZE);
             Log.d(TAG, "Reading response...");
 
@@ -142,6 +142,24 @@ public class UDPClient implements Runnable {
      */
     public void setPort(int port) {
         this.port = port;
+    }
+
+    /**
+     * Gets the timeout.
+     *
+     * @return the timeout
+     */
+    public int getTimeout() {
+        return timeout;
+    }
+
+    /**
+     * Sets the timeout.
+     *
+     * @param timeout
+     */
+    public void setTimeout(int timeout) {
+        this.timeout = timeout;
     }
 
     /**

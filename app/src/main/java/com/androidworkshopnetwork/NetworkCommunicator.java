@@ -170,7 +170,7 @@ public class NetworkCommunicator {
                             case "CA":
                                 Log.i(TAG, "CAMERA request accepted :)");
                                 Intent cameraIntent = new Intent(context, CameraActivity.class);
-                                cameraIntent.putExtra("SENSOR_IP", sensorIp);
+                                cameraIntent.putExtra("ip", sensorIp);
                                 context.startActivity(cameraIntent);
                                 break;
 
@@ -213,9 +213,7 @@ public class NetworkCommunicator {
      * @param sensorIp
      */
     public static void stopAlarm(String sensorIp) throws UnknownHostException {
-        UDPClient udpClient = new UDPClient();
-        udpClient.setIp(SERVER_IP);
-        udpClient.setPort(SERVER_PORT);
+        UDPClient udpClient = prepareUDPClient();
         SensorButton sensorButton = SensorButtonManager.getInstance().getSensorButtonBySensorIp(sensorIp);
         udpClient.setMessageToSend("ST_AL_" + sensorIp);
 
@@ -234,11 +232,87 @@ public class NetworkCommunicator {
         } catch (InterruptedException e) {
             e.printStackTrace();
         } finally {
-            Log.i(TAG, "STOP ALARM tread now dead");
+            Log.i(TAG, "STOP ALARM thread now dead");
         }
 
         if (udpClient.getResponse() == null) {
             sensorButton.updateSensorState(previewSensorState);
+        }
+    }
+
+    /**
+     * Start camera direction.
+     */
+    public static void startCameraDirection(String sensorIp) throws UnknownHostException {
+        UDPClient udpClient = prepareUDPClient();
+        udpClient.setMessageToSend("CA_" + sensorIp);
+
+        Log.i(TAG, "Start camera drive signal thread");
+        Thread udpThread = new Thread(udpClient);
+        Log.i(TAG, "\t\tLaunching the thread...");
+
+        udpThread.start();
+
+        try {
+            udpThread.join();
+            Log.i(TAG, "\t\tThread has been joined successfully");
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } finally {
+            Log.i(TAG, "Start camera signal thread now dead");
+        }
+    }
+
+    /**
+     * Send camera direction.
+     *
+     * @param direction
+     */
+    public static void sendCameraDirection(DirectionEnum direction, String ip) throws UnknownHostException {
+        UDPClient udpClient = prepareUDPClient();
+        udpClient.setTimeout(1000);
+        udpClient.setMessageToSend(direction.toString() + "_" + ip);
+
+        Log.i(TAG, "SEND DIRECTION \"" + direction.toString() + "\" thread");
+        Thread udpThread = new Thread(udpClient);
+        Log.i(TAG, "\t\tLaunching the thread...");
+
+        udpThread.start();
+
+        try {
+            udpThread.join();
+            Log.i(TAG, "\t\tThread has been joined successfully");
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } finally {
+            Log.i(TAG, "SEND DIRECTION thread now dead");
+        }
+    }
+
+    /**
+     * Send end camrea direction.
+     *
+     * @param ip
+     * @throws UnknownHostException
+     */
+    public static void sendEndCameraDirection(String ip) throws UnknownHostException {
+        UDPClient udpClient = prepareUDPClient();
+        udpClient.setTimeout(1000);
+        udpClient.setMessageToSend("FA_" + ip);
+
+        Log.i(TAG, "SEND END CAMERA thread");
+        Thread udpThread = new Thread(udpClient);
+        Log.i(TAG, "\t\tLaunching the thread...");
+
+        udpThread.start();
+
+        try {
+            udpThread.join();
+            Log.i(TAG, "\t\tThread has been joined successfully");
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } finally {
+            Log.i(TAG, "SEND END CAMERA thread now dead");
         }
     }
 
@@ -249,6 +323,18 @@ public class NetworkCommunicator {
      */
     public static void setContext(Context newContext) {
         context = newContext;
+    }
+
+    /**
+     * Prepares the UDPClient.
+     *
+     * @return the udpclient
+     */
+    private static UDPClient prepareUDPClient() throws UnknownHostException {
+        UDPClient udpClient = new UDPClient();
+        udpClient.setIp(SERVER_IP);
+        udpClient.setPort(SERVER_PORT);
+        return udpClient;
     }
 
 }

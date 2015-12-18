@@ -91,6 +91,15 @@ public class HomeActivity extends Activity {
 
     @SuppressLint("SetTextI18n")
     private void initSensorsButtons() {
+        /** TEST pour le passage à la caméra. */
+        Sensor camera = new Sensor();
+        camera.setName("Camera1");
+        camera.setIp("1.2.3.4");
+        camera.setSensorType(SensorTypeEnum.Camera);
+        camera.setState(StateEnum.OK);
+        sensorManager.addSensor(camera);
+        /***/
+
         sensorButtonManager.updateSensorButtonMap(context);
         HashMap<String, SensorButton> sensorButtonMap = sensorButtonManager.getSensorButtonMap();
 
