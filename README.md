@@ -5,9 +5,8 @@ This application is a part of a complete project, realized by a team of 4 studen
 
 Release 1 (18/12/2015)
 Features :
-
-Multi-sensors support (with generic sensor addition)
-Camera control
-Built-in UDP servers and client
-Built-in IP security to check first a sensor IP before adding it
-Data reset support
+  - Multi-sensors support (with generic sensor addition)
+  - Camera control
+  - Built-in UDP servers and client
+  - Built-in IP security to check first a sensor IP before adding it
+  - Data reset support
