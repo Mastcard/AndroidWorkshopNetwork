@@ -3,4 +3,12 @@
     <string name="action_settings">Settings</string>
     <string name="admin_button">Admin</string>
     <string name="main_text_home">Welcome on your Alarm application !</string>
+    <string name="stop_sended">STOP alarm sended...</string>
+
+    <integer name="buffer_size">256</integer>
+    <string name="title_activity_camera">CameraActivity</string>
+    <string name="reset_button">RESET</string>
+    <string name="reset_message">This will delete the serialize file of the application. Then, you will lose all information about your sensors.</string>
+
+
 </resources>
